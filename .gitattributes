@@ -1,0 +1,9 @@
+* text=auto eol=lf
+
+*.png binary
+
+web/package-lock.json linguist-generated=true -diff
+api/Gemfile.lock linguist-generated=true
+api/db/schema.rb linguist-generated=true
+api/schema.graphql linguist-generated=true
+web/packages/api/src/generated/** linguist-generated=true

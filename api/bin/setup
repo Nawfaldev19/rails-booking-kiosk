@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# Installs gems into vendor/bundle, prepares the database and loads demo data.
+require "fileutils"
+
+APP_ROOT = File.expand_path("..", __dir__)
+
+def system!(*args)
+  system(*args, exception: true)
+end
+
+FileUtils.chdir APP_ROOT do
+  system!("bundle config set --local path vendor/bundle")
+  system("bundle check") || system!("bundle install")
+  system! "bin/rails db:prepare"
+  system! "bin/rails db:seed:replant" if ARGV.include?("--reset")
+end

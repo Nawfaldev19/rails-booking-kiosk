@@ -1,0 +1,29 @@
+# Local and editor files
+.DS_Store
+*.log
+
+# Environment files (an example is committed)
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+dist/
+api/vendor/bundle/
+api/.bundle/
+
+# Rails runtime files
+api/log/
+api/tmp/
+**/storage/
+
+# Test and report output
+coverage/
+.vitest/
+test-results/
+playwright-report/
+.e2e-storage/
+sbom.cdx.json
+*.sarif
+results.sarif

@@ -1,0 +1,18 @@
+# Connection details come from the standard libpq variables (PGHOST, PGPORT,
+# PGUSER, PGPASSWORD), both locally and in Docker Compose. Production reads DATABASE_URL.
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  max_connections: <%= ENV.fetch("DB_POOL", 12) %>
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("BOOKING_KIOSK_DATABASE", "booking_kiosk_development") %>
+
+test:
+  <<: *default
+  database: booking_kiosk_test
+
+production:
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
