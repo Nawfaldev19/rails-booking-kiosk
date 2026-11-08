@@ -1,0 +1,177 @@
+.kiosk-landing {
+  display: grid;
+  justify-items: center;
+}
+
+.desk-picker {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.desk-picker-link {
+  display: block;
+  color: var(--color-text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.desk-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.desk-heading h1 + p {
+  margin-top: var(--space-1);
+}
+
+.desk-progress {
+  display: grid;
+  gap: var(--space-1);
+  width: min(220px, 100%);
+}
+
+.desk-progress progress {
+  width: 100%;
+  height: 12px;
+  accent-color: var(--color-primary);
+}
+
+.desk-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Absolutely positioned inside a flex container, the icon keeps its centred static position. */
+.desk-search svg {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.desk-search .k-input {
+  padding-left: calc(var(--space-3) * 2 + 18px);
+  min-height: 48px;
+  font-size: var(--text-lg);
+}
+
+.desk-switch {
+  display: none;
+  gap: var(--space-2);
+}
+
+.desk-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.desk-column {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  max-height: 70dvh;
+  overflow-y: auto;
+}
+
+.desk-column h2 {
+  font-size: var(--text-lg);
+}
+
+.desk-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Narrow columns stack the time above the name with the button beside both;
+ * a column wide enough (container query) puts all three on one line.
+ */
+.desk-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'time action'
+    'who action';
+  align-items: center;
+  gap: var(--space-1) var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  animation: desk-enter var(--duration-standard) var(--ease-standard);
+}
+
+.desk-card > .k-button {
+  grid-area: action;
+}
+
+.desk-time {
+  grid-area: time;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.desk-who {
+  grid-area: who;
+  display: grid;
+  min-width: 0;
+}
+
+@container (min-width: 460px) {
+  .desk-card {
+    grid-template-columns: 7.5rem minmax(0, 1fr) auto;
+    grid-template-areas: 'time who action';
+  }
+
+  .desk-time {
+    color: var(--color-text);
+    font-size: var(--text-md);
+  }
+}
+
+.desk-empty {
+  padding: var(--space-6) 0;
+  text-align: center;
+}
+
+@keyframes desk-enter {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .desk-switch {
+    display: flex;
+  }
+
+  .desk-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .desk-columns[data-pane='expected'] .desk-arrived,
+  .desk-columns[data-pane='arrived'] .desk-expected {
+    display: none;
+  }
+
+  /* One column: the page scrolls, not a box inside it. */
+  .desk-column {
+    max-height: none;
+    overflow-y: visible;
+  }
+}

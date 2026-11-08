@@ -1,0 +1,374 @@
+.member-landing {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.member-eyebrow {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.member-hero {
+  max-width: 16ch;
+  font-size: clamp(var(--text-2xl), 5vw, var(--text-4xl));
+}
+
+.member-lede {
+  max-width: 60ch;
+  font-size: var(--text-lg);
+}
+
+.member-points {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.member-points h2 {
+  margin: var(--space-2) 0 var(--space-1);
+  font-size: var(--text-lg);
+}
+
+.member-point-icon {
+  color: var(--color-primary);
+}
+
+.member-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--layout-inline);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.member-switcher .k-select {
+  min-height: 36px;
+  width: auto;
+}
+
+.book-heading {
+  display: grid;
+  gap: var(--space-2);
+}
+
+/* Room around the chips so their focus outline is not clipped by the scroll box. */
+.day-strip {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  margin: 0 calc(-1 * var(--space-1));
+  padding: var(--space-1) var(--space-1) var(--space-2);
+  scroll-padding-inline: var(--space-4);
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+
+.day-chip {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: var(--text-md);
+  font-weight: 700;
+  white-space: nowrap;
+  scroll-snap-align: start;
+  cursor: pointer;
+}
+
+.day-chip[aria-pressed='true'] {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.machine-lane {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-6);
+}
+
+.machine-info h3 {
+  font-size: var(--text-lg);
+}
+
+.machine-info p,
+.machine-slots {
+  font-size: var(--text-sm);
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slot {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-md);
+  cursor: pointer;
+  transition:
+    background var(--duration-micro) var(--ease-standard),
+    transform var(--duration-micro) var(--ease-standard);
+}
+
+.slot-free:hover:not(:disabled) {
+  background: var(--color-primary-soft);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.slot:disabled {
+  cursor: not-allowed;
+}
+
+.slot-taken {
+  background: var(--color-sunken);
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.slot-past {
+  border-style: dashed;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.slot-held {
+  border: 2px solid var(--color-warning);
+  font-weight: 700;
+}
+
+.slot-mine {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 700;
+}
+
+.hold-tray {
+  position: sticky;
+  top: var(--space-2);
+  z-index: 2;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.hold-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--color-warning);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-2);
+  animation: hold-enter var(--duration-enter) var(--ease-standard);
+}
+
+.hold-text {
+  display: grid;
+  flex: 1;
+  min-width: min(200px, 100%);
+}
+
+.hold-expired {
+  color: var(--color-danger);
+  font-weight: 700;
+}
+
+.hold-message {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  font-weight: 700;
+}
+
+.hold-message-error {
+  color: var(--color-danger);
+}
+
+.hold-message-success {
+  color: var(--color-success);
+}
+
+@keyframes hold-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.booking-list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.booking-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.team-role {
+  width: auto;
+  min-height: 38px;
+}
+
+.booking-item > div:first-child {
+  flex: 1;
+  min-width: min(200px, 100%);
+}
+
+.template-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.message-preview {
+  padding: var(--space-4);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-control);
+  background: var(--color-sunken);
+}
+
+.template-vars {
+  font-size: var(--text-sm);
+}
+
+.template-vars code {
+  display: inline-block;
+  margin-right: var(--space-2);
+  white-space: nowrap;
+}
+
+.message-preview pre,
+pre.message-preview {
+  margin: 0;
+  font-family: var(--font-body);
+  white-space: pre-wrap;
+}
+
+.outbox-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  list-style: none;
+  cursor: pointer;
+}
+
+.outbox-summary::-webkit-details-marker {
+  display: none;
+}
+
+/* The chevron is the only sign the entry opens, so it turns with the open state. */
+.outbox-title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.outbox-chevron {
+  flex-shrink: 0;
+  align-self: center;
+  color: var(--color-text-muted);
+  transition: transform var(--duration-micro) var(--ease-standard);
+}
+
+details[open] .outbox-chevron {
+  transform: rotate(90deg);
+}
+
+details[open] > .outbox-summary {
+  margin-bottom: var(--space-3);
+}
+
+details[open] > :not(summary) + * {
+  margin-top: var(--space-2);
+}
+
+.usage-table {
+  width: 100%;
+  min-width: 320px;
+  border-collapse: collapse;
+}
+
+.usage-table th,
+.usage-table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+}
+
+.usage-table tbody tr + tr > * {
+  border-top: 1px solid var(--color-border);
+}
+
+.usage-table thead > tr > * {
+  border-bottom: 1px solid var(--color-border-strong);
+  font-size: var(--text-sm);
+}
+
+.usage-table .k-num {
+  text-align: right;
+}
+
+.usage-bar-cell {
+  width: 40%;
+  min-width: 4rem;
+}
+
+.usage-bar {
+  display: block;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+}
+
+@media (max-width: 860px) {
+  .member-landing,
+  .machine-lane,
+  .template-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .machine-lane {
+    gap: var(--space-4);
+  }
+}
+
+@media (max-width: 599px) {
+  .usage-bar-cell {
+    display: none;
+  }
+}
+
+.account-card {
+  max-width: 480px;
+}

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignore": ["packages/api/src/generated/**"],
+  "ignoreDependencies": [
+    "@fontsource-variable/bricolage-grotesque",
+    "@fontsource/atkinson-hyperlegible",
+    "@fontsource-variable/jetbrains-mono"
+  ]
+}
