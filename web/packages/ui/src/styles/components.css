@@ -63,11 +63,30 @@
   text-underline-offset: 0.2em;
 }
 
-/* On a phone the bar keeps only the brand, its links and the two controls, so nothing wraps or overflows. */
+/* On a phone the bar keeps only the brand, its links and the two controls. The wordmark may wrap onto
+   two lines so the bar always fits the viewport instead of scrolling sideways. */
 @media (max-width: 599px) {
   .k-brand-sub,
   .k-header-user {
     display: none;
+  }
+
+  .k-header {
+    gap: var(--space-2);
+    padding-block: var(--space-1);
+  }
+
+  .k-brand {
+    flex-shrink: 1;
+    line-height: 1.15;
+  }
+
+  .k-brand svg {
+    flex-shrink: 0;
+  }
+
+  .k-header-end .k-button {
+    padding-inline: var(--space-3);
   }
 }
 
