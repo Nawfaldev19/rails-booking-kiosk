@@ -70,7 +70,7 @@ services:
   # Installs the web packages once per start, before either app's dev server runs,
   # so no container ever reads node_modules while another one is rewriting it.
   web-install:
-    image: node:24-alpine
+    image: node:25-alpine
     working_dir: /web
     command: npm ci
     networks: [booking_kiosk]
@@ -79,7 +79,7 @@ services:
       - web-modules:/web/node_modules
 
   member:
-    image: node:24-alpine
+    image: node:25-alpine
     working_dir: /web
     command: npm run dev --workspace @booking-kiosk/member -- --host 0.0.0.0
     networks:
@@ -99,7 +99,7 @@ services:
         condition: service_healthy
 
   kiosk:
-    image: node:24-alpine
+    image: node:25-alpine
     working_dir: /web
     command: npm run dev --workspace @booking-kiosk/kiosk -- --host 0.0.0.0
     networks:
