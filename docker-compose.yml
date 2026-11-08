@@ -1,0 +1,130 @@
+# One command to run everything:  docker compose up
+#   member app  http://localhost:5173
+#   kiosk app   http://localhost:5174
+#   API         http://localhost:3300/up
+# Demo password for every seeded account: booking-kiosk-demo-pass
+
+services:
+  db:
+    image: postgres:16-alpine
+    networks: [booking_kiosk]
+    environment:
+      POSTGRES_USER: booking_kiosk
+      POSTGRES_PASSWORD: booking_kiosk
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U booking_kiosk"]
+      interval: 2s
+      retries: 30
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  api:
+    image: ruby:3.4
+    working_dir: /app
+    command: >
+      sh -c "bundle install &&
+             bin/rails db:prepare &&
+             (bin/rails runner 'exit(Workspace.exists? ? 0 : 1)' || bin/rails db:seed) &&
+             bin/rails server -b 0.0.0.0 -p 3300"
+    environment:
+      PGHOST: db
+      PGUSER: booking_kiosk
+      PGPASSWORD: booking_kiosk
+      BUNDLE_PATH: /bundle
+      ALLOWED_ORIGINS: http://localhost:5173,http://localhost:5174
+      # Only the member and kiosk containers (fixed addresses below) may report a client address.
+      TRUSTED_PROXIES: 172.28.0.10,172.28.0.11
+      MEMBER_APP_URL: http://localhost:5173
+    networks: [booking_kiosk]
+    ports:
+      - "127.0.0.1:3300:3300"
+    volumes:
+      - ./api:/app
+      - bundle:/bundle
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3300/up"]
+      interval: 5s
+      retries: 60
+
+  # Housekeeping every minute: lapse expired holds, retry undelivered messages.
+  scheduler:
+    image: ruby:3.4
+    working_dir: /app
+    command: sh -c "while true; do bin/rails booking_kiosk:tick; sleep 60; done"
+    networks: [booking_kiosk]
+    environment:
+      PGHOST: db
+      PGUSER: booking_kiosk
+      PGPASSWORD: booking_kiosk
+      BUNDLE_PATH: /bundle
+    volumes:
+      - ./api:/app
+      - bundle:/bundle
+    depends_on:
+      api:
+        condition: service_healthy
+
+  # Installs the web packages once per start, before either app's dev server runs,
+  # so no container ever reads node_modules while another one is rewriting it.
+  web-install:
+    image: node:24-alpine
+    working_dir: /web
+    command: npm ci
+    networks: [booking_kiosk]
+    volumes:
+      - ./web:/web
+      - web-modules:/web/node_modules
+
+  member:
+    image: node:24-alpine
+    working_dir: /web
+    command: npm run dev --workspace @booking-kiosk/member -- --host 0.0.0.0
+    networks:
+      booking_kiosk:
+        ipv4_address: 172.28.0.10
+    environment:
+      BOOKING_KIOSK_API_URL: http://api:3300
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web:/web
+      - web-modules:/web/node_modules
+    depends_on:
+      web-install:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+
+  kiosk:
+    image: node:24-alpine
+    working_dir: /web
+    command: npm run dev --workspace @booking-kiosk/kiosk -- --host 0.0.0.0
+    networks:
+      booking_kiosk:
+        ipv4_address: 172.28.0.11
+    environment:
+      BOOKING_KIOSK_API_URL: http://api:3300
+    ports:
+      - "5174:5174"
+    volumes:
+      - ./web:/web
+      - web-modules:/web/node_modules
+    depends_on:
+      web-install:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+
+networks:
+  booking_kiosk:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+
+volumes:
+  db-data:
+  bundle:
+  web-modules:
