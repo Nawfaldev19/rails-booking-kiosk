@@ -1,0 +1,39 @@
+# Weekly dependency updates for every ecosystem in the repository. Minor and
+# patch updates are grouped per ecosystem so they arrive as one pull request.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      web-minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: bundler
+    directory: /api
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      api-minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      actions-minor-and-patch:
+        update-types: [minor, patch]
+
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      images-minor-and-patch:
+        update-types: [minor, patch]
