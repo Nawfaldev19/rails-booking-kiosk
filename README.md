@@ -3,17 +3,21 @@
 [![CI](https://github.com/Nawfaldev19/rails-booking-kiosk/actions/workflows/ci.yml/badge.svg)](https://github.com/Nawfaldev19/rails-booking-kiosk/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-2d6a4f.svg)](LICENSE)
 
-Machine booking for community makerspaces: members hold slots that cannot collide, staff run a front-desk kiosk, and each space keeps its data to itself.
+Machine booking for community makerspaces: members hold slots that cannot collide, staff run a front-desk kiosk, and each space keeps its data to itself. Built to show how to make double booking and cross-tenant leaks impossible in the database, not just in application code.
+
+**Live demo:** TODO: add the member app and kiosk URLs after deploying (steps in [DEPLOY.md](DEPLOY.md)). Until then, `docker compose up` runs it locally.
 
 ![The member app's booking page: a slot held with its countdown, the member's own bookings filled in, and slots other people booked struck through](docs/assets/screenshot-member.png)
 
-## Engineering highlights
+## Key decisions and trade-offs
 
 - **No double booking under any concurrency.** A Postgres [exclusion constraint](api/db/migrate/20261017010100_create_machines_and_bookings.rb) refuses overlapping active bookings from every writer; a [real-thread spec](api/spec/services/concurrency_spec.rb) races eight members for one slot and a [Playwright test](web/e2e/member.spec.ts) has two browsers click it at once.
 - **Tenant isolation at two layers.** Resolvers reach data only through [`Tenant`](api/app/models/tenant.rb), and composite foreign keys stop any record pointing into another workspace, even from raw SQL ([isolation attacks](api/spec/requests/tenant_isolation_spec.rb)).
 - **Holds that expire exactly, without a scheduler**, with a countdown on the server's clock measured from live responses only ([`serverClock.ts`](web/packages/api/src/serverClock.ts), [ADR 0002](docs/adr/0002-holds-expire-lazily-and-count-down-on-the-server-clock.md)).
 - **Managers never know anyone's password.** New staff get a single-use, expiring [invitation](api/app/models/invitation.rb) through a [transactional outbox](api/app/services/messages/deliver.rb) that claims with `SKIP LOCKED` and retries with backoff.
 - **Safe, cheap templates.** Workspace wording in strict [Liquid](api/app/models/message_renderer.rb) with an allow-list, bounded input and a linear-time range check.
+- **Cookie sessions, same-origin clients.** No token handling in JavaScript and no CORS. The price: a session cannot be revoked one by one (a password change revokes all), and any production proxy must forward `/graphql` and copy the security headers ([ADR 0007](docs/adr/0007-same-origin-clients-cookie-sessions-and-strict-headers.md)).
+- **Read isolation by convention plus review.** The database enforces cross-workspace references, but reads rely on going through `Tenant`. Postgres row-level security is the next hardening step ([ADR 0003](docs/adr/0003-tenant-isolation-through-a-scoped-access-object-and-composite-keys.md)).
 - **One typed contract.** A GraphQL schema where every element is described, a committed [SDL](api/schema.graphql), generated client types and typed payload errors.
 
 ## Quick start
@@ -60,7 +64,14 @@ Rails 8.1 (API mode) with graphql-ruby, PostgreSQL and Liquid; React 19, TypeScr
 
 ## Testing
 
-`make verify` runs RuboCop, RSpec, ESLint, Knip, Prettier, `tsc`, Vitest, both builds and Playwright. Counts, coverage and what each suite proves: [test strategy](docs/testing/strategy.md).
+`make verify` runs RuboCop, RSpec, ESLint, Knip, Prettier, `tsc`, Vitest, both builds and Playwright. Last full run recorded in the [test strategy](docs/testing/strategy.md): 171 RSpec examples, 61 Vitest tests (22 unit, 39 component, in Chromium) and 25 Playwright runs, all passing; API line coverage 98.88%. Running the web unit tests alone (`cd web && npx vitest run --project unit`) takes a second.
+
+## What I would do next
+
+- Postgres row-level security under `Tenant`, so reads are protected by the database too.
+- Per-session revocation (a session table) instead of revoking all sessions on a password change.
+- A real mail provider; the demo writes invitations to files.
+- A shared cache for the rate limiter; today it is per process.
 
 ## Documentation
 

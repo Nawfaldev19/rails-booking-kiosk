@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "Booking Kiosk front ends: the member app and the front-desk kiosk.",
+  "author": "Nawfal Imran",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nawfaldev19/rails-booking-kiosk.git",
+    "directory": "web"
+  },
+  "homepage": "https://github.com/Nawfaldev19/rails-booking-kiosk#readme",
   "license": "MIT",
   "type": "module",
   "engines": {
