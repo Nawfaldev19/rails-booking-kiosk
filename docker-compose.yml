@@ -19,7 +19,7 @@ services:
       - db-data:/var/lib/postgresql/data
 
   api:
-    image: ruby:3.4
+    image: ruby:4.0
     working_dir: /app
     command: >
       sh -c "bundle install &&
@@ -51,7 +51,7 @@ services:
 
   # Housekeeping every minute: lapse expired holds, retry undelivered messages.
   scheduler:
-    image: ruby:3.4
+    image: ruby:4.0
     working_dir: /app
     command: sh -c "while true; do bin/rails booking_kiosk:tick; sleep 60; done"
     networks: [booking_kiosk]
